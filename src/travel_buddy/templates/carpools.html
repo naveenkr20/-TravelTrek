@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,300' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="../static/css/mobile.css">
+    <link rel="stylesheet" href="../static/css/carpools.css">
+    
+    <link rel="stylesheet" href="../static/css/theme.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+
+    <script src="../static/javascript/autocomplete.js"></script>
+    <script src={{autocomplete_query}} async></script>
+
+    <title>Travel Buddy - Carpools</title>
+</head>
+
+<body>
+    <!-- make a menu with options to create car pool and search car pools -->
+    <div class="ui secondary pointing menu big nav">
+        <div class="item"><img src="../static/logos/nav logo.png" style="width:7.5em; user-select: none;" ondragstart="return false;"></div>
+        <a class="white-overlay item" href="/profile">
+            <i class="user icon"></i>
+            <div class="mobile hidden">Profile</div>
+        </a>
+        <a class="white-overlay item" href="/routes">
+            <i class="map icon"></i>
+            <div class="mobile hidden">Route Analysis</div>
+        </a>
+        <a class="white-overlay item active" href="/carpools">
+            <i class="car icon"></i>
+            <div class="mobile hidden">Carpools</div>
+        </a>
+        <a class="white-overlay item" href="/trends">
+			<i class="question icon"></i>
+			<div class="mobile hidden">My Trends</div>
+		</a>
+        <a class="white-overlay item" href="/settings">
+            <i class="settings icon"></i>
+            <div class="mobile hidden">Settings</div>
+        </a>
+        <a class="white-overlay item right" href="/logout">
+            <i class="sign out alternate icon"></i>
+            <div class="mobile hidden">Log Out of {{username}}</div>
+        </a>
+    </div>
+    <div class="ui container">
+        <div class="top-padding"></div>
+        <div class="ui grid divided stackable">
+            {% if errors %}
+            <div class="row">
+                <div class="ui negative message fluid" style="width: 100%;">
+                    <div class="header">
+                        There was a problem submitting your car pool offer.
+                    </div>
+                    <ul class="list">
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+            <div class="row">
+                <form class="ui form" style="width: 100%;" method="POST">
+                    <div class="two fields">
+                        <div class="field">
+                            <label><i class="fa-solid fa-location-dot"></i> From</label>
+                            <input id="input-1" type="text" name="location-from">
+                        </div>
+                        <div class="field">
+                            <label><i class="fa-solid fa-map-location-dot"></i> To</label>
+                            <input id="input-2" type="text" name="location-to">
+                        </div>
+                    </div>
+                    <div class="three fields">
+                        <div class="field">
+                            <label><i class="fa-solid fa-car"></i> Number of Seats Available</label>
+                            <input required name="seats" type="number" value="1">
+                        </div>
+                        <div class="field">
+                            <label><i class="fa-solid fa-money-bill"></i> Price Per Passenger (£)</label>
+                            <input required name="price" type="number" value="15">
+                        </div>
+                        <div class="field">
+                            <label><i class="fa-solid fa-calendar-days"></i> Journey Start Date</label>
+                            <input required name="date-from" type="datetime-local">
+                        </div>
+                    </div>
+                    <h4 class="dividing header ui"><i class="fa-solid fa-book"></i> Extra Information</h4>
+                    <div class="field">
+                        <textarea maxlength=500 name="description" id="description_input" cols="4" rows="4" placeholder="Describe the pick-up point, the journey, and any additional information."></textarea>
+                        <div id="description_character_limit"></div>
+                    </div>
+                    <!-- <input class="ui fluid button green" type="submit" value="Create"> -->
+                    <button class="ui button fluid green theme-4" type="submit"><i class="fa-solid fa-bolt" style="color: white !important;"></i> Create Carpool</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="ui grid stackable">
+            {% for ride in carpools %}
+            <a class="custom-card" id="card-{{ride[0]}}">
+                <div class="ui grid stackable" style="width: 100%;">
+                    <div class="ten wide column">
+                        <div class="city">
+                            <b>{{ride[5]}}</b><br>{{ride[3]}}
+                            <!--<span class="left">{{ride[5]}}</span>
+                            <span class="right">{{ride[3]}}</span>-->
+                        </div>
+                        <div class="city">
+                            <b>{{ride[16]}}</b><br>{{ride[4]}}
+                        </div>
+
+                        <form action="/routes" method="POST">
+                            <input type="hidden" value="{{ride[3]}}" name="start_point">
+                            <input type="hidden" value="{{ride[4]}}" name="destination">
+                            <input type="hidden" value="driving" name="mode">
+                            <button class="ui button theme-4" style="margin-top: 1em; background-color: #f4f9f4 !important; border: 2px solid #5C8D89;">
+                                <div>
+                                    <i style="color: #5C8D89 !important;" class="icon map"></i>
+                                    View Estimated Route
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="four wide column">
+                        <div class="ui list">
+                            <div class="item">
+                                <!--data-content="{{ride[2]}} seat(s) available"-->
+                                <i class="fa-solid fa-car"></i> {{ride[2]}}
+                            </div>
+                            <div class="item">
+                                <i class="fa fa-route"></i> {{ride[9]}}
+                            </div>
+                            <div class="item">
+                                <i class="icon stopwatch"></i>~{{ride[11]}}
+                            </div>
+                            <div class="item">
+                                <i class="icon leaf"></i> {{ride[12]}}kg of CO2 saved
+                            </div>
+                        </div>
+                    </div>
+                    <div class="two wide column" style="text-align: right;">£{{ride[6]}}</div>
+                    <div class="one wide column" style="text-align: center;">
+                        <img src="https://images.unsplash.com/photo-1518806118471-f28b20a1d79d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60" alt="" class="ui avatar fluid image">
+                    </div>
+                    <div class="ten wide column">
+                        {{ride[1]}}
+                        <span style="padding: 8px;">
+                        <i class="icon star"></i>
+                        {% if ride[14] != None%}
+                        {{ride[14]}} <span style="color: grey;">({{ride[15]}} ratings)</span>
+                        {%else%}
+                        <span style="color: grey;">Not enough ratings</span>
+                        {%endif%}
+                        </span>
+                    </div>
+                    <div class="five wide column" style="text-align: right;">
+                        <div class="ui buttons">
+                            <button onclick='window.location="/carpools/{{ride[0]}}"' class="ui button green theme-4"><i style="color: white !important;" class="fa-solid fa-circle-info"></i> See Details</button>
+                            <div class="ui or"></div>
+                            <button onclick="ToggleInterest('{{ride[0]}}');"
+                                    id="interest-btn-{{ride[0]}}"
+                                    class="ui button green theme-4"><i style="color: white !important;" class="fa-solid fa-bolt"></i> Show Interest</button>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <div class="ui horizontal divider hidden"></div>
+            {%endfor%}
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    document.getElementById("description_input").onkeyup = DescriptionCharLimit;
+    document.getElementById("description_input").onkeydown = DescriptionCharLimit;
+
+    function DescriptionCharLimit(){
+        var limit = 500;
+        var text = document.getElementById("description_input").value;
+
+        document.getElementById("description_character_limit").innerHTML = `${limit - text.length} characters left`;
+    }
+
+    DescriptionCharLimit();
+</script>
+
+<script>
+    const current_interested_ids = {{interested_list | tojson}};
+
+    for (var id of current_interested_ids){
+        ToggleInterestUI(id, true);
+    }
+
+    function ToggleInterest(journey_id){
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("interest-btn-" + journey_id).disabled = true;
+                document.getElementById("interest-btn-" + journey_id).innerHTML = '<i class="fa-solid fa-spinner"></i>';
+
+                var responseText = this.responseText;
+
+                setTimeout(function(){
+                    document.getElementById("interest-btn-" + journey_id).disabled = false;
+                    ToggleInterestUI(journey_id, responseText == "True")
+                },500);
+            }
+        };
+        xhttp.open("GET", "/toggle_carpool_interest/" + journey_id, true);
+        xhttp.send();
+    }
+
+    function ToggleInterestUI(journey_id, state){
+        if (state){
+            document.getElementById("card-"+journey_id).classList.add("active");
+            document.getElementById("interest-btn-"+journey_id).innerHTML = "<i style='color: white !important;' class='fa-solid fa-check'></i> Interested";
+        } else {
+            document.getElementById("card-"+journey_id).classList.remove("active");
+            document.getElementById("interest-btn-"+journey_id).innerHTML = "<i class='fa-solid fa-bolt'></i> Show Interest";
+        }
+    }
+</script>

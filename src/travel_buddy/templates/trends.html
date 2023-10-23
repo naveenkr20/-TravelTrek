@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<head>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,300' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="../static/css/mobile.css">
+
+    <link rel="stylesheet" href="../static/css/theme.css">
+
+    <link rel="stylesheet" href="../static/css/trends.css" />
+
+	<title>Travel Buddy - Trends</title>
+</head>
+
+<body>
+	<div class="ui secondary pointing menu big nav">
+        <div class="item"><img src="../static/logos/nav logo.png" style="width:7.5em; user-select: none;" ondragstart="return false;"></div>
+		<a class="item" href="/profile">
+			<i class="user icon"></i>
+			<div class="mobile hidden">Profile</div>
+		</a>
+		<a class="item" href="/routes">
+			<i class="map icon"></i>
+			<div class="mobile hidden">Route Analysis</div>
+		</a>
+		<a class="item" href="/carpools">
+			<i class="car icon"></i>
+			<div class="mobile hidden">Carpools</div>
+		</a>
+        <a class="item active" href="/trends">
+			<i class="question icon"></i>
+			<div class="mobile hidden">My Trends</div>
+		</a>
+		<a class="item" href="/settings">
+			<i class="settings icon"></i>
+			<div class="mobile hidden">Settings</div>
+		</a>
+		<a class="item right" href="/logout">
+			<i class="sign out alternate icon"></i>
+			<div class="mobile hidden">Log Out of {{username}}</div>
+		</a>
+	</div>
+
+    <div class="ui container">
+        <div class="top-padding"></div>
+            
+        <div class="ui grid">
+            <div class="ten wide column" style="height:calc(100vh - 60px); overflow:auto;">
+                <table class="ui selectable basic collapsing celled table" style="text-align: center; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="font-size: 1.5em;">
+                                Your Car ({{user_car_make}})
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Time</th>
+                            <th>Expected Fuel Cost (£)</th>
+                            <th>Expected CO2 Emissions (kg)</th>
+                        </tr>
+                        <tr>
+                            <td>1 Month</td>
+                            <td>{{user_fuel_costs[0]}}</td>
+                            <td>{{user_co2_emissions[0]}}</td>
+                        </tr>
+                        <tr>
+                            <td>3 Months</td>
+                            <td>{{user_fuel_costs[1]}}</td>
+                            <td>{{user_co2_emissions[1]}}</td>
+                        </tr>
+                        <tr>
+                            <td>6 Months</td>
+                            <td>{{user_fuel_costs[2]}}</td>
+                            <td>{{user_co2_emissions[2]}}</td>
+                        </tr>
+                        <tr>
+                            <td>1 Year</td>
+                            <td>{{user_fuel_costs[3]}}</td>
+                            <td>{{user_co2_emissions[3]}}</td>
+                        </tr>
+                        <tr>
+                            <td>5 Years</td>
+                            <td>{{user_fuel_costs[4]}}</td>
+                            <td>{{user_co2_emissions[4]}}</td>
+                        </tr>
+                        <tr>
+                            <td>10 Years</td>
+                            <td>{{user_fuel_costs[5]}}</td>
+                            <td>{{user_co2_emissions[5]}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table id="car-other-comparison" class="ui selectable basic collapsing celled table" style="text-align: center; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th colspan="5" style="font-size: 1.5em;">
+                                Your Car vs <span style="color: #5C8D89;" id="car-other"></span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Time</th>
+                            <th colspan="2">Expected Fuel Cost (£)</th>
+                            <th colspan="2">Expected CO2 Emissions (kg)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1 Month</td>
+                            <td id="user-fuel-0">{{user_fuel_costs[0]}}</td>
+                            <td style="color: #5C8D89; font-weight: 900;" id="fuel-0">{{fuel_costs[0]}}</td>
+                            <td id="co2-user-0">{{user_co2_emissions[0]}}</td>
+                            <td style="color: #5C8D89; font-weight: 900;" id="co2-0">{{co2_emissions[0]}}</td>
+                        </tr>
+                        <tr>
+                            <td>3 Months</td>
+                            <td id="user-fuel-1">{{user_fuel_costs[1]}}</td>
+                            <td style="color: #5C8D89; font-weight: 900;" id="fuel-1">{{fuel_costs[1]}}</td>
+                            <td id="co2-user-1">{{user_co2_emissions[1]}}</td>
+                            <td style="color: #5C8D89; font-weight: 900;" id="co2-1">{{co2_emissions[1]}}</td>
+                        </tr>
+                        <tr>
+                            <td>6 Months</td>
+                            <td id="user-fuel-2">{{user_fuel_costs[2]}}</td>
+                            <td style="color: #5C8D89; font-weight: 900;" id="fuel-2">{{fuel_costs[2]}}</td>
+                            <td id="co2-user-2">{{user_co2_emissions[2]}}</td>
+                            <td style="color: #5C8D89; font-weight: 900;" id="co2-2">{{co2_emissions[2]}}</td>
+                        </tr>
+                        <tr>
+                            <td>1 Year</td>
+                            <td id="user-fuel-3">{{user_fuel_costs[3]}}</td>
+                            <td style="color: #5C8D89; font-weight: 900;" id="fuel-3">{{fuel_costs[3]}}</td>
+                            <td id="co2-user-3">{{user_co2_emissions[3]}}</td>
+                            <td style="color: #5C8D89; font-weight: 900;" id="co2-3">{{co2_emissions[3]}}</td>
+                        </tr>
+                        <tr>
+                            <td>5 Years</td>
+                            <td id="user-fuel-4">{{user_fuel_costs[4]}}</td>
+                            <td style="color: #5C8D89; font-weight: 900;" id="fuel-4">{{fuel_costs[4]}}</td>
+                            <td id="co2-user-4">{{user_co2_emissions[4]}}</td>
+                            <td style="color: #5C8D89; font-weight: 900;" id="co2-4">{{co2_emissions[4]}}</td>
+                        </tr>
+                        <tr>
+                            <td>10 Years</td>
+                            <td id="user-fuel-5">{{user_fuel_costs[5]}}</td>
+                            <td style="color: #5C8D89; font-weight: 900;" id="fuel-5">{{fuel_costs[5]}}</td>
+                            <td id="co2-user-5">{{user_co2_emissions[5]}}</td>
+                            <td style="color: #5C8D89; font-weight: 900;" id="co2-5">{{co2_emissions[5]}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="six wide column" style="height:calc(100vh - 60px); overflow:auto;">
+                <div class="ui card fluid" style="background-color: #A7D7C5;">
+                    <div class="content">
+                        <div class="header">Your {{user_car_make}}</div>
+                        <h4 class="ui sub header">Miles per Gallon <i class="fa-solid fa-gauge-simple-high" style="padding-left: 0.5rem; color:black !important;"></i></h4>
+                        <div class="content">
+                            {{user_car_mpg}}
+                        </div>
+                        <h4 class="ui sub header">Fuel Type <i class="fa-solid fa-gas-pump" style="padding-left: 0.5rem; color:black !important;"></i></h4>
+                        <div class="content" style="text-transform: uppercase;">
+                            {{user_fuel_type}}
+                        </div>
+                        <h4 class="ui sub header">Engine Size <i class="fa-solid fa-oil-can" style="padding-left: 0.5rem; color:black !important;"></i></h4>
+                        <div class="content">
+                            {{user_engine_size}}L
+                        </div>
+                        <h4 class="ui sub header">Monthly Miles <i class="fa-solid fa-map" style="padding-left: 0.5rem; color:black !important;"></i></h4>
+                        <div class="content">
+                          Expected monthy miles
+                          <div class="ui input">
+                            <input type="text" value=1000 name="monthly_miles">
+                          </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="ui button fluid green theme-4" onclick='RefreshCarRecommendations(this);'>
+                    <i class="fa-solid fa-arrows-rotate" style="color: white !important;"></i>
+                    Refresh Car Recommendations
+                </button>
+                <div style="font-size: 1.2em;" class="ui horizontal divider"><i class="fa-solid fa-car-battery"></i> Electric Car Recommendations</div>
+                {% for ev in evs %}
+                <div class="ui card fluid">
+                    <div class="ui fluid image">
+                        <div class="ui white big ribbon label" style="background-color: #5C8D89; color: white;">
+                            {{ev[2]}}
+                        </div>
+                        {% if ev == evs[0] %}
+                          <p></p>
+                          <div class="ui yellow big right ribbon label" style="background-color: #918708; color: white; border-right-color:none !important;">
+                            Best efficiency <i class="trophy white icon" style="color:#FFFFFF !important; padding-left: 1rem;"></i>
+                          </div>
+                        {% endif %}
+                        <img src="{{ ev[4] }}"/>
+                    </div>
+                    <div class="content">
+                        <div class="header">{{ ev[0] }}  {{ ev[1] }}</div>
+                    </div>
+                    <div class="content">
+                        <div class="ui horizontal fluid divided list">
+                            <div class="item">
+                                <b>Efficiency: </b>
+                                {{ev[3]}}
+                            </div>
+                        </div>
+                    </div>
+                    <button data-brand="{{ev[0]}}" data-model="{{ev[1]}}"
+                            data-user-fuel-cost="{{user_fuel_costs[0]}}"
+                            data-user-co2="{{user_co2_emissions[0]}}"
+                            data-index="{{loop.index}}"
+                            onclick="CompareCar(this);"
+                            class="ui button fluid green bottom attached theme-4 car-btn-compare">Compare {{ ev[0] }} {{ ev[1] }}</button>
+                  <!--
+                  <form action="/trends" method="POST" id="form1">
+                    <input type="hidden" value="{{ev[0]}} {{ev[1]}}" name="car">
+                    <input type="hidden" value="{{ev[3]}}" name="wpm">
+                    <button class="ui button fluid green bottom attached theme-4">Compare {{ ev[0] }} {{ ev[1] }}</button>
+                  </form>-->
+                </div>
+                <div class="ui hidden divider"></div>
+                {% endfor %}
+                
+                <button class="ui button fluid green theme-4" onclick='RefreshCarRecommendations(this);'>
+                    <i class="fa-solid fa-arrows-rotate" style="color: white !important;"></i>
+                    Refresh Car Recommendations
+                </button>
+            </div>
+        </div>
+        
+    </div>
+
+</body>
+
+<style>
+    @import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
+
+    * {
+        box-sizing: border-box;
+        font-family: "Open Sans", "Helvetica", "Montserrat", sans-serif;
+    }
+
+    body{
+        background: #F4F9F4;
+    }
+
+    .nav{
+		background: -webkit-linear-gradient(to right, #2cafa4, #74B49B) !important;
+		background: linear-gradient(to right, #2cafa4, #74B49B) !important;
+		color: #FFFFFF !important;
+		margin: 0rem !important;
+	}
+
+	.nav .item{
+		color: #FFFFFF !important;	
+	}
+	
+	.active{
+		border-bottom-color: #FFFFFF !important;
+	}
+
+    h2{
+        margin-bottom: 0px;
+    }
+
+    .top-padding {
+        padding-top: 20px;
+    }
+
+    .fa-spinner {
+        animation: fa-spin 2s infinite linear;
+    }
+
+    .car-btn-compare.active {
+        background-color: #f4f9f4 !important;
+        color: #5C8D89 !important;
+    }
+</style>
+
+<script>
+    function RefreshCarRecommendations(btn){
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner" style="color: white !important;"></i> Refreshing';
+
+        setTimeout(function(){
+            window.location.reload();
+        },500);
+    }
+
+    function CompareCar(btn){
+        let fuel_costs = {{evs_fuel_costs | safe}}
+        let co2s = {{evs_co2_emissions | safe}}
+
+        let user_fuel_cost = btn.getAttribute("data-user-fuel-cost");
+        let user_co2 = btn.getAttribute("data-user-co2");
+
+        let index = parseInt(btn.getAttribute("data-index")) - 1;
+
+        let time_periods = [1,3,6,12,60,120];
+
+        document.querySelectorAll(".car-btn-compare").forEach(function(btn){
+            btn.classList.remove("active");
+        });
+
+        btn.classList.add("active");
+
+        for (var i = 0; i < time_periods.length; i++){
+            let fuel_cost = fuel_costs[index];
+            let co2 = co2s[index];
+            
+            document.getElementById("fuel-"+i).innerHTML = Round(fuel_cost*time_periods[i], 0);
+            document.getElementById("co2-"+i).innerHTML = Round(co2*time_periods[i], 0);
+
+            CompareValues(document.getElementById("fuel-"+i), document.getElementById("user-fuel-"+i));
+            CompareValues(document.getElementById("co2-"+i), document.getElementById("co2-user-"+i));
+        }
+
+        document.getElementById("car-other-comparison").style.visibility = "visible";
+
+        document.getElementById("car-other").innerHTML = btn.getAttribute("data-brand") + " " + btn.getAttribute("data-model");
+    }
+
+    function CompareValues(base, other){
+        let base_value = parseFloat(base.innerHTML);
+        let other_value = parseFloat(other.innerHTML);
+
+        if (base_value > other_value){
+            base.classList.add("green");
+            other.classList.add("red");
+        } else if (base_value < other_value){
+            base.classList.add("red");
+            other.classList.add("green");
+        } else {
+            base.classList.add("grey");
+            other.classList.add("grey");
+        }
+    }
+
+    document.getElementById("car-other-comparison").style.visibility = "hidden";
+
+    function Round(num, dp){
+        return Math.round(num * Math.pow(10, dp)) / Math.pow(10, dp);
+    }
+
+    
+</script>
+
+</html>
